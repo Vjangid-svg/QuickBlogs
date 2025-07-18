@@ -2,7 +2,7 @@ import React from 'react'
 
 const NewsLater = () => {
   return (
-   <div className='flex flex-col items-center justify-center text-center space-y-2 my-32'>
+   <div className='flex mx-10 sm:mx-0 flex-col items-center justify-center text-center space-y-2 my-32'>
   <h1 className='md:text-4xl text-2xl font-semibold'>
     Never Miss a Blog!
   </h1>

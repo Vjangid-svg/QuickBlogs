@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [input, setInput] = useState("");
-
+const [loading, setLoading] = useState(true); // NEW
   const fetchBlogs = async () => {
     try {
       const { data } = await axios.get("/api/blog/all");
@@ -21,16 +21,17 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchBlogs();
-    const token = localStorage.getItem("token");
-    if (token) {
-      setToken(token);
-      axios.defaults.headers.common["Authorization"] = `${token}`;
-    }
-  }, []);
+useEffect(() => {
+  fetchBlogs()
+  const token = localStorage.getItem("token");
+  if (token) {
+    setToken(token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }
+  setLoading(false); // Mark auth check done
+}, []);
 
-  const value = {
+  const value = { 
     axios,
     navigate,
     token,
@@ -39,6 +40,7 @@ export const AppProvider = ({ children }) => {
     setBlogs,
     input,
     setInput,
+    loading,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

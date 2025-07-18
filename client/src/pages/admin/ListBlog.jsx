@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { blog_data } from "../../assets/assets";
 import BlogTableItem from "../../components/admin/BlogTableItem";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 function ListBlog() {
-  const [blogs, setblogs] = useState([]);
+
+  const [blogs, setBlogs] = useState([]);
+  const {axios} = useAppContext();
+
   const fetchBlogs = async () => {
-    setblogs(blog_data);
+    try {
+      const {data} = await axios.get("/api/admin/blogs")
+      if (data.success) {
+        setBlogs(data.blogs)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+       toast.error(error.message)
+    }
   };
   useEffect(() => {
     fetchBlogs();
@@ -13,9 +27,9 @@ function ListBlog() {
 
   return (
     <div className="flex-1 pt-5 bg-blue-50/50 ">
-      <h1 className="ms-10">All blogs</h1>
+      <h1 className=" ms-4 sm:ms-10">All blogs</h1>
 
-      <div className="relative max-w-4xl ms-10 mt-4 shadow rounded-lg bg-white">
+      <div className="relative max-w-4xl mx-4 sm:ms-10 mt-4 shadow rounded-lg bg-white">
         <div className="max-h-[500px] overflow-y-auto overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           <table className="w-full text-sm text-gray-500">
             <thead className="text-xs text-gray-600 text-left uppercase">

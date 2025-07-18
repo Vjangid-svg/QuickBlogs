@@ -12,25 +12,29 @@ function BlogList() {
   ];
   const data = blog_data;
   const [menu, setMenu] = useState("All");
-  const { blogs, input } = useAppContext();
+  const { blogs=[], input } = useAppContext();
 
-  const  filteredBlogs = ()=>{
-    if (input === " "){
-      return blogs ; 
-    } 
-    return blogs.filter((blog)=>blog.title.toLowerCase().includes(input.toLowerCase()) || blog.category.toLowerCase().includes(input.toLowerCase()))
-  }
+  const filteredBlogs = blogs.filter((blog) => {
+    const matchesSearch =
+      blog.title.toLowerCase().includes(input.toLowerCase()) ||
+      blog.category.toLowerCase().includes(input.toLowerCase());
 
-  const [filterData, setFilterData] = useState(data);
+    const matchesCategory =
+      menu === "All" || blog.category?.toLowerCase() === menu.toLowerCase();
+
+    return matchesSearch && matchesCategory;
+  });
+
+  const [filterData, setFilterData] = useState(blogs);
 
   const filterFood = (category) => {
     // console.log(data);
     if (category === "All") {
-      setFilterData(data);
+      setFilterData(blogs);
       //  setSelectedBtn("all");
       return;
     }
-    const filter = data?.filter(
+    const filter = blogs.filter(
       (item) => item.category?.toLowerCase() === category.toLowerCase()
     );
     setFilterData(filter);
@@ -39,13 +43,13 @@ function BlogList() {
 
   return (
     <div>
-      <div className="flex justify-center gap-4 sm:gap-8 my-10 relative ">
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-8 my-10 relative ">
         {blogCategories.map((item) => (
           <div key={item} className="text-gray-500 ">
             <button
               onClick={() => {
                 setMenu(item);
-                filterFood(item);
+                // filterFood(item);
               }}
               className={` cursor-pointer text-gray  px-4 py-1 ${
                 menu === item &&
@@ -59,8 +63,8 @@ function BlogList() {
       </div>
       {/* Blog-card */}
 
-      <div className="  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-8 mx-28 mb-16 ">
-        {filterData?.map((blog) => (
+      <div className="  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-8 sm:mx-28 mx-10 mb-16 ">
+        {filteredBlogs?.map((blog) => (
           <Link to={`/blog/${blog._id}`} key={blog._id}>
             <div
               key={blog._id}
@@ -75,7 +79,7 @@ function BlogList() {
                 <span className=" px-6 py-1.span border border-primary/40 bg-primary/10 rounded-full text-sm text-primary">
                   {blog.category}
                 </span>
-                <h3 className="text-xl font-semibold  mb-2">{blog.title}</h3>
+                <h3 className="text-xl font-semibold  my-2">{blog.title}</h3>
                 <p className="text-sm text-gray-500">
                   {blog.description?.slice(0, 100)}...
                 </p>

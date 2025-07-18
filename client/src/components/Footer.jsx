@@ -3,8 +3,8 @@ import { assets } from "../assets/assets";
 import { footer_data } from "../assets/assets";
 const Footer = () => {
   return (
-    <div className="px-34 back bg-[#5044e508] ">
-      <div className="flex justify-between py-10  border-b border-b-gray-300">
+    <div className="sm:px-34 px-10 back bg-[#5044e508] ">
+      <div className=" flex flex-col sm:flex-row justify-between py-10  border-b border-b-gray-300">
         <div className="max-w-[400px]">
           <img
             src={assets.logo}

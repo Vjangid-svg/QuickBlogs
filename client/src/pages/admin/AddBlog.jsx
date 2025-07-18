@@ -1,24 +1,84 @@
 import React, { useEffect, useRef, useState } from "react";
 import { assets, blogCategories } from "../../assets/assets";
-import quill from "quill";
 import Quill from "quill";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
+import {parse} from "marked"
 function AddBlog() {
+  const { axios } = useAppContext();
+  const [isAdding, setIsAdding] = useState(false);
+
   const editorRef = useRef(null);
   const quilllRef = useRef(null);
-
+const [description, setDescription] = useState("");
   const [image, setImage] = useState(false);
   const [title, setTitle] = useState(" ");
   const [subTitle, setSubTitle] = useState(" ");
+  const [loading,setLoading] = useState(false)
   const [category, setCategory] = useState(" startup");
   const [isPublished, setIsPublished] = useState(false);
 
-  const generateContent = async () => {};
+  const generateContent = async () => {
+
+    if(!title) return toast.error("Please enter a title")
+      try {
+        setLoading(true);
+        const {data} = await axios.post("/api/blog/generate",{prompt:title})
+        if (data.success) {
+          quilllRef.current.root.innerHTML = parse(data.content)
+        } else {
+          toast.error(data.message)
+        }
+      } catch (error) {
+         toast.error(error.message)
+      }finally{
+        setLoading(false)
+      }
+  };
   const onSubmitHandler = async (e) => {
-    e.preventDefault();
+   try {
+  e.preventDefault();
+  setIsAdding(true);
+
+  const blog = {
+    title,
+    subTitle,
+    description,
+    category,
+    isPublished,
+  };
+
+  const formData = new FormData();
+  formData.append('blog', JSON.stringify(blog));
+  formData.append('image', image);
+
+  const { data } = await axios.post('/api/blog/add', formData);
+
+  if (data.success) {
+    toast.success(data.message)
+    setImage(false)
+    setTitle("")
+    quilllRef.current.root.innerHTML=""
+    setCategory("Startup")
+
+    // handle success
+  }else{
+    toast.error(data.message)
+  }
+}
+catch (error) {
+    toast.error(error.message)
+    }finally{
+      setIsAdding(false)
+    }
   };
   useEffect(() => {
     if (!quilllRef.current && editorRef.current) {
       quilllRef.current = new Quill(editorRef.current, { theme: "snow" });
+      
+    quilllRef.current.on('text-change', () => {
+      setDescription(quilllRef.current.getText());
+    });
     }
   }, []);
   return (
@@ -62,11 +122,12 @@ function AddBlog() {
           onChange={(e) => setSubTitle(e.target.value)}
           value={subTitle}
         />
-        <p className="mt-4">Blog Description</p>
+        <div dangerouslySetInnerHTML={{ __html: description }} />
         <div className="max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative">
           <div ref={editorRef}></div>
 
           <button
+          disabled={loading}
             type="button"
             onClick={generateContent}
             className="absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer"
@@ -91,23 +152,23 @@ function AddBlog() {
             );
           })}
         </select>
-        <div className='flex gap-2 mt-4'>
-  <p>Publish Now</p>
-  <input
-    type="checkbox"
-    checked={isPublished}
-    className='scale-125 cursor-pointer'
-    onChange={e => setIsPublished(e.target.checked)}
-  />
-</div>
+        <div className="flex gap-2 mt-4">
+          <p>Publish Now</p>
+          <input
+            type="checkbox"
+            checked={isPublished}
+            className="scale-125 cursor-pointer"
+            onChange={(e) => setIsPublished(e.target.checked)}
+          />
+        </div>
 
-<button
-  type="submit"
-  className="mt-8 w-40 h-10 bg-primary text-white rounded cursor-pointer text-sm"
->
-  Add Blog
-</button>
- 
+        <button
+          disabled={isAdding}
+          type="submit"
+          className="mt-8 w-40 h-10 bg-primary text-white rounded cursor-pointer text-sm"
+        >
+          {isAdding ? "Adding...." : "Add Blog"}
+        </button>
       </div>
     </form>
   );
