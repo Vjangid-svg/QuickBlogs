@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { comments_data } from "../../assets/assets";
+// import { comments_data } from "../../assets/assets";
 import CommentTable from "../../components/admin/CommentTable";
-import axios from "axios";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 

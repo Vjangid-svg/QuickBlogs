@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { blog_data } from "../assets/assets";
+// import { blog_data } from "../assets/assets";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 function BlogList() {
@@ -10,7 +10,7 @@ function BlogList() {
     "Lifestyle",
     "Finance",
   ];
-  const data = blog_data;
+  // const data = blog_data;
   const [menu, setMenu] = useState("All");
   const { blogs=[], input } = useAppContext();
 
@@ -25,21 +25,21 @@ function BlogList() {
     return matchesSearch && matchesCategory;
   });
 
-  const [filterData, setFilterData] = useState(blogs);
+  // const [filterData, setFilterData] = useState(blogs);
 
-  const filterFood = (category) => {
-    // console.log(data);
-    if (category === "All") {
-      setFilterData(blogs);
-      //  setSelectedBtn("all");
-      return;
-    }
-    const filter = blogs.filter(
-      (item) => item.category?.toLowerCase() === category.toLowerCase()
-    );
-    setFilterData(filter);
-    //  setSelectedBtn(type);
-  };
+  // const filterFood = (category) => {
+  //   // console.log(data);
+  //   if (category === "All") {
+  //     setFilterData(blogs);
+  //     //  setSelectedBtn("all");
+  //     return;
+  //   }
+  //   const filter = blogs.filter(
+  //     (item) => item.category?.toLowerCase() === category.toLowerCase()
+  //   );
+  //   setFilterData(filter);
+  //   //  setSelectedBtn(type);
+  // };
 
   return (
     <div>
