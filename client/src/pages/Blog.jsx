@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Moment from "moment";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Loading from "../components/Loading";
 // import Moment from "moment";
 function Blog() {
   const { id } = useParams();
@@ -59,7 +60,7 @@ function Blog() {
     fetchComments();
   }, []);
 
-  if (!data) return <div>Blog not found.</div>;
+  if (!data) return <Loading/>;
 
   return data ? (
     <div className="relative">
@@ -165,7 +166,7 @@ function Blog() {
       />
     </div>
   ) : (
-    <div>...Loading</div>
+    <Loading/>
   );
 }
 
