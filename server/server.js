@@ -13,15 +13,7 @@ await connectDb();
 // app.use(cors())
 
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-      "https://quick-blog-green.vercel.app" // your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors());
 
 app.use(express.json())
 
